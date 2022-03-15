@@ -15,7 +15,7 @@ export default function Blog() {
   let [editorState, setEditorState] = React.useState(() =>
     EditorState.createEmpty()
   );
-  let [message, setMessage] = React.useState("");
+  let [message, setMessage] = React.useState("Hello World this is sample");
   let { jwt } = useUser();
 
   async function handleSubmit(ev) {
@@ -40,6 +40,14 @@ export default function Blog() {
       setMessage("Failed to save blog: " + resData.message);
     }
   }
+
+  React.useEffect(() => {
+    if (message) {
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+    }
+  }, [message]);
 
   return (
     <div>

@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      new AppError("Your username or password didn't matched with ours");
+      throw new AppError("Your username or password didn't matched with ours");
     }
 
     if (!(await compare(body.password, user.password))) {
