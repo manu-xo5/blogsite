@@ -1,0 +1,31 @@
+.bg {
+  display: flex;
+  padding: 2rem 10rem;
+}
+
+.image {
+  flex: 1;
+  width: 100%;
+}
+
+.formContainer {
+  flex: 1;
+  padding: 1rem 4rem;
+}
+
+.divider {
+  padding: 1rem 0;
+}
+
+.stack > * + * {
+  margin-top: 1rem;
+}
+
+.center {
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.error {
+  color: red;
+}

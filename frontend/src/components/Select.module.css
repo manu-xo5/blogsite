@@ -1,0 +1,23 @@
+.container {
+  display: block;
+}
+
+.label {
+  display: block;
+  padding-bottom: 0.2rem;
+  padding-left: 0.2rem;
+  font-size: 1.1rem;
+}
+
+.label::first-letter {
+  text-transform: capitalize;
+}
+
+.select {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 0.1rem solid black;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  font-size: inherit;
+}
