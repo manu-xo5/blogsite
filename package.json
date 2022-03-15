@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prestart": "cd frontend && npm i && npm run build",
+    "build": "cd frontend && npm i && npm run build",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
