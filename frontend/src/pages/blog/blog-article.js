@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import s from "./blog-article.module.css";
 
 function BlogArticle() {
   let { blogId } = useParams();
@@ -29,7 +30,21 @@ function BlogArticle() {
   return (
     <>
       {blog ? (
-        <main dangerouslySetInnerHTML={{ __html: blog.html }} />
+        <main className={s.wrapper}>
+          <div className={s.meta}>
+            <h1>{blog.title}</h1>
+            <p>Category: {blog.category}</p>
+          </div>
+          <img
+            className={s.cover}
+            src={`data:image;base64,${blog.image}`}
+            alt="cover poster"
+          />
+          <article
+            className={s.content}
+            dangerouslySetInnerHTML={{ __html: blog.html }}
+          />
+        </main>
       ) : error ? (
         <p>{error}</p>
       ) : (

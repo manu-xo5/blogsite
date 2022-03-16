@@ -1,0 +1,16 @@
+.meta {
+  padding: 2rem 1rem 0;
+}
+
+.content {
+  padding: 3rem;
+  line-height: 1.5;
+}
+
+.cover {
+  margin-top: 1rem;
+  padding: 0.1rem;
+  width: 100%;
+  height: 45vh;
+  object-fit: cover;
+}

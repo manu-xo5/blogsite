@@ -12,7 +12,7 @@ export default function Navbar() {
       <Link to="/" className={s.logo}>
         <img
           className={s.logoImg}
-          src="favicon.ico"
+          src="/favicon.ico"
           alt="react offical rotating atom icon"
         />
         <span>Blogsite</span>

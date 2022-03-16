@@ -8,6 +8,9 @@ let blogSchema = new mongoose.Schema({
   image: {
     type: Buffer,
     required: true,
+    get: function (image) {
+      return image.toString("base64");
+    },
   },
   category: {
     type: "String",

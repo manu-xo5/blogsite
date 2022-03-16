@@ -60,7 +60,12 @@ router.get("/:blogId", async (req, res) => {
       new AppError("Blog doesn't exists")
     );
 
-    res.json({ blog });
+    let jsObject = {
+      ...blog.toJSON(),
+      image: blog.image.toString("base64"),
+    };
+
+    res.json({ blog: jsObject });
   } catch (error) {
     if (error instanceof AppError) {
       res.status(400).json({ message: error.message });

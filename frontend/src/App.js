@@ -13,7 +13,7 @@ import { useUser } from "./context/user";
 import Blog from "./pages/blog";
 import Spinner from "./components/Spinner";
 import UpdateBlog from "./pages/blog/update";
-import BlogArticle from "./pages/blog/blogArticle";
+import BlogArticle from "./pages/blog/blog-article";
 
 function App() {
   let { user } = useUser();

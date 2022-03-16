@@ -15,6 +15,7 @@ import Button from "../components/Button";
 import { useUser } from "../context/user";
 import { useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import useImage from "../hook/useImage";
 
 export let category = ["gaming", "music", "informational"];
 
@@ -29,6 +30,10 @@ export default function Blog() {
   let [blog, setBlog] = React.useState(null);
   let [blogError, setBlogError] = React.useState("");
   let shouldUpdate = Boolean(blogId);
+
+  // image preview hooks
+  let [blogImage, setBlogImage] = React.useState(null);
+  let blogImagePreviewSrc = useImage(blogImage ?? blog?.image);
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -66,7 +71,7 @@ export default function Blog() {
           );
           let html = convertFromHTML(blog.html);
           setBlog(blog);
-          console.log({ html });
+          // setBlogImage(blog.image);
           setEditorState(
             EditorState.createWithContent(
               ContentState.createFromBlockArray(html.contentBlocks)
@@ -104,7 +109,14 @@ export default function Blog() {
           <div className={s.stack}>
             <Input label="title" name="title" defaultValue={blog.title} />
 
-            <Input label="image" type="file" name="image" />
+            <Input
+              label="image"
+              type="file"
+              name="image"
+              onChange={(ev) => setBlogImage(ev.currentTarget.files[0])}
+            />
+
+            <img src={blogImagePreviewSrc} alt="X" width="100%" />
 
             <Select
               label="Category"
