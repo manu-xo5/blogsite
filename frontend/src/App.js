@@ -13,6 +13,7 @@ import { useUser } from "./context/user";
 import Blog from "./pages/blog";
 import Spinner from "./components/Spinner";
 import UpdateBlog from "./pages/blog/update";
+import BlogArticle from "./pages/blog/blogArticle";
 
 function App() {
   let { user } = useUser();
@@ -52,22 +53,25 @@ function App() {
             >
               <Route index element={<Home />} />
 
+              <Route path="blog" element={<Outlet />}>
+                <Route
+                  index
+                  element={
+                    user?.userType === "admin" ? (
+                      <Blog />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                />
+                <Route path="read/:blogId" element={<BlogArticle />} />
+              </Route>
+
               <Route
-                path="blog"
+                path="blog/update/:blogId"
                 element={
                   user?.userType === "admin" ? (
                     <Blog />
-                  ) : (
-                    <Navigate to="/login" replace />
-                  )
-                }
-              />
-
-              <Route
-                path="blog/update"
-                element={
-                  user?.userType === "admin" ? (
-                    <UpdateBlog />
                   ) : (
                     <Navigate to="/login" replace />
                   )

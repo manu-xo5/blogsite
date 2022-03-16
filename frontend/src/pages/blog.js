@@ -4,10 +4,17 @@ import s from "./blog.module.css";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import * as React from "react";
-import { EditorState } from "draft-js";
+import {
+  ContentState,
+  convertFromHTML,
+  convertFromRaw,
+  EditorState,
+} from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 import Button from "../components/Button";
 import { useUser } from "../context/user";
+import { useParams } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 export let category = ["gaming", "music", "informational"];
 
@@ -18,6 +25,11 @@ export default function Blog() {
   let [message, setMessage] = React.useState("Hello World this is sample");
   let { jwt } = useUser();
 
+  let { blogId } = useParams();
+  let [blog, setBlog] = React.useState(null);
+  let [blogError, setBlogError] = React.useState("");
+  let shouldUpdate = Boolean(blogId);
+
   async function handleSubmit(ev) {
     ev.preventDefault();
 
@@ -25,21 +37,55 @@ export default function Blog() {
 
     let body = new FormData(ev.currentTarget);
     body.set("html", html);
-    let res = await fetch("/api/blog/new", {
-      method: "POST",
-      body: body,
-      headers: {
-        Authorization: jwt,
-      },
-    });
+    let res = await fetch(
+      shouldUpdate ? `/api/blog/update/${blogId}` : "/api/blog/new",
+      {
+        method: "POST",
+        body: body,
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
     let resData = await res.json();
 
     if (res.ok) {
       setMessage("Blog saved successfully");
+      setBlog(resData.blog);
     } else {
       setMessage("Failed to save blog: " + resData.message);
     }
   }
+
+  React.useEffect(() => {
+    async function main() {
+      try {
+        if (blogId) {
+          let { blog } = await fetch(`/api/blog/${blogId}`).then((res) =>
+            res.json()
+          );
+          let html = convertFromHTML(blog.html);
+          setBlog(blog);
+          console.log({ html });
+          setEditorState(
+            EditorState.createWithContent(
+              ContentState.createFromBlockArray(html.contentBlocks)
+            )
+          );
+        } else {
+          setBlog({
+            title: "",
+            category: category[0],
+          });
+          setEditorState(EditorState.createEmpty());
+        }
+      } catch (error) {
+        setBlogError(error.message || "Couldn't load blog");
+      }
+    }
+
+    main();
+  }, [blogId]);
 
   React.useEffect(() => {
     if (message) {
@@ -50,32 +96,48 @@ export default function Blog() {
   }, [message]);
 
   return (
-    <div>
+    <div className={s.wrapper}>
       {message && <p className={s.message}>{message}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <div className={s.stack}>
-          <Input label="title" name="title" />
+      {blog ? (
+        <form onSubmit={handleSubmit}>
+          <div className={s.stack}>
+            <Input label="title" name="title" defaultValue={blog.title} />
 
-          <Input label="image" type="file" name="image" />
+            <Input label="image" type="file" name="image" />
 
-          <Select label="Category" name="category">
-            {category.map((opt) => (
-              <option>{opt}</option>
-            ))}
-          </Select>
-        </div>
+            <Select
+              label="Category"
+              name="category"
+              defaultValue={blog.category}
+            >
+              {category.map((opt) => (
+                <option key={opt}>{opt}</option>
+              ))}
+            </Select>
+          </div>
 
-        <Editor
-          editorState={editorState}
-          toolbarClassName="toolbarClassName"
-          wrapperClassName="wrapperClassName"
-          editorClassName="editorClassName"
-          onEditorStateChange={setEditorState}
-        />
+          <Editor
+            wrapperStyle={{
+              maxHeight: "60vh",
+              overflowY: "auto",
+            }}
+            editorState={editorState}
+            toolbarClassName="toolbarClassName"
+            wrapperClassName="wrapperClassName"
+            editorClassName="editorClassName"
+            onEditorStateChange={setEditorState}
+          />
 
-        <Button type="submit">Save</Button>
-      </form>
+          <Button type="submit">Save</Button>
+        </form>
+      ) : blogError ? (
+        <p>{blogError}</p>
+      ) : (
+        <p>
+          <Spinner />
+        </p>
+      )}
     </div>
   );
 }

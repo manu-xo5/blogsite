@@ -15,7 +15,7 @@ export function BlogCard({
   return (
     <article className={s.container}>
       {showEdit && (
-        <Link to={`/blog/update/?id=${_id}`}>
+        <Link to={`/blog/update/${_id}`}>
           <PencilIcon className={s.pencil} />
         </Link>
       )}
@@ -28,7 +28,7 @@ export function BlogCard({
         dangerouslySetInnerHTML={{ __html: html.substring(0, 60) + "..." }}
       />
 
-      <Link to={`/api/blog/${_id}`}>Read More &rarr;</Link>
+      <Link to={`/blog/read/${_id}`}>Read More &rarr;</Link>
     </article>
   );
 }

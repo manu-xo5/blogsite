@@ -12,11 +12,28 @@ router.post("/new", auth, multer().single("image"), async (req, res) => {
       throw new AppError("Only admin can add blogs");
 
     let newBlog = await Blog.create({ ...req.body, image: req.file.buffer });
-    res.json(newBlog);
+    res.json({ newBlog });
   } catch (error) {
     if (error instanceof AppError)
       res.status(400).json({ message: error.message ?? "Error" });
     else throw error;
+  }
+});
+
+router.post("/update/:blogId", multer().single("image"), async (req, res) => {
+  try {
+    let blogId = req.params.blogId;
+    if (!blogId) throw new AppError("Blog doesn't exists");
+
+    let blog = await Blog.findOneAndUpdate({ _id: blogId }, req.body, {
+      new: true,
+    }).orFail(new AppError(`Couldn't find the blog with id ${blogId}`));
+
+    res.json({ blog });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(400).json({ message: error.message });
+    } else throw error;
   }
 });
 
