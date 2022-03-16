@@ -59,7 +59,7 @@ function Home() {
                 <BlogCard
                   showEdit={user?.userType === "admin"}
                   _id={blog._id}
-                  imgSrc={`data:image;base64,${blog.image}`}
+                  imgSrc={blog.image}
                   title={blog.title}
                   category={blog.category}
                   html={blog.html}

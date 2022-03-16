@@ -4,12 +4,7 @@ import s from "./blog.module.css";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import * as React from "react";
-import {
-  ContentState,
-  convertFromHTML,
-  convertFromRaw,
-  EditorState,
-} from "draft-js";
+import { ContentState, convertFromHTML, EditorState } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 import Button from "../components/Button";
 import { useUser } from "../context/user";
@@ -56,7 +51,7 @@ export default function Blog() {
 
     if (res.ok) {
       setMessage("Blog saved successfully");
-      setBlog(resData.blog);
+      setBlog(resData.blog || resData.newBlog);
     } else {
       setMessage("Failed to save blog: " + resData.message);
     }

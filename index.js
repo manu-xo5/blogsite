@@ -7,6 +7,7 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use("/api/auth", require("./api/auth"));
 app.use("/api/blog", require("./api/blog"));
+app.use("/api/image", require("./api/image"));
 
 app.use("/", express.static(__dirname + "/frontend/build"));
 app.use((error, req, res, next) => {
