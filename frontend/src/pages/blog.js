@@ -23,7 +23,7 @@ export default function Blog() {
   let [editorState, setEditorState] = React.useState(() =>
     EditorState.createEmpty()
   );
-  let [message, setMessage] = React.useState("Hello World this is sample");
+  let [message, setMessage] = React.useState("");
   let { jwt } = useUser();
 
   let { blogId } = useParams();
@@ -116,7 +116,14 @@ export default function Blog() {
               onChange={(ev) => setBlogImage(ev.currentTarget.files[0])}
             />
 
-            <img src={blogImagePreviewSrc} alt="X" width="100%" />
+            <div>
+              <p className={s.label}>Image Preview</p>
+              <img
+                className={s.image}
+                src={blogImagePreviewSrc}
+                alt="&times;"
+              />
+            </div>
 
             <Select
               label="Category"
@@ -127,21 +134,27 @@ export default function Blog() {
                 <option key={opt}>{opt}</option>
               ))}
             </Select>
+
+            <div>
+              <p className={s.label}>Content</p>
+              <Editor
+                wrapperStyle={{
+                  minHeight: "40vh",
+                  maxHeight: "60vh",
+                  overflowY: "auto",
+                  border: ".1rem solid",
+                  borderRadius: ".5rem",
+                }}
+                editorState={editorState}
+                toolbarClassName="toolbarClassName"
+                wrapperClassName="wrapperClassName"
+                editorClassName="editorClassName"
+                onEditorStateChange={setEditorState}
+              />
+            </div>
+
+            <Button type="submit">Save</Button>
           </div>
-
-          <Editor
-            wrapperStyle={{
-              maxHeight: "60vh",
-              overflowY: "auto",
-            }}
-            editorState={editorState}
-            toolbarClassName="toolbarClassName"
-            wrapperClassName="wrapperClassName"
-            editorClassName="editorClassName"
-            onEditorStateChange={setEditorState}
-          />
-
-          <Button type="submit">Save</Button>
         </form>
       ) : blogError ? (
         <p>{blogError}</p>
