@@ -1,4 +1,4 @@
-.empty {
+.blogMessage {
   padding: 3rem 0;
   text-align: center;
   color: #888;
@@ -11,4 +11,45 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 3rem;
   padding: 2rem;
+}
+
+.queryContainer {
+  display: grid;
+  gap: 4rem;
+  grid-template-columns: 3fr 1fr;
+  padding: 2rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.25rem 1rem;
+  border: 0.1rem solid black;
+  border-radius: 0.5rem;
+  background-color: #eeeeee;
+  font-size: inherit;
+}
+
+.selectContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.select {
+  display: inline;
+  padding: 0.25rem 1rem;
+  font-size: inherit;
+  border: 0.1rem solid black;
+  border-radius: 0.5rem;
+  background-color: #eeeeee;
+}
+
+@media screen and (min-width: 1280px) {
+  .queryContainer {
+    grid-template-columns: 1fr 3fr 1fr;
+    gap: 1rem;
+  }
+  .searchInput {
+    grid-column-start: 2;
+  }
 }

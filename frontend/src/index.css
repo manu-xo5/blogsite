@@ -13,3 +13,7 @@ a {
 ul {
   list-style: none;
 }
+
+.page--spinner {
+  margin-top: 10rem;
+}

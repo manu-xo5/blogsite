@@ -35,11 +35,7 @@ function BlogArticle() {
             <h1>{blog.title}</h1>
             <p>Category: {blog.category}</p>
           </div>
-          <img
-            className={s.cover}
-            src={`data:image;base64,${blog.image}`}
-            alt="cover poster"
-          />
+          <img className={s.cover} src={blog.image} alt="cover poster" />
           <article
             className={s.content}
             dangerouslySetInnerHTML={{ __html: blog.html }}

@@ -16,7 +16,7 @@ export default function useImage(file, defaultSrc) {
       url = toUrl(file);
       setImgUrl(url);
     } else {
-      setImgUrl(`data:image;base64,${file}`);
+      setImgUrl(file);
     }
 
     return () => URL.revokeObjectURL(url);

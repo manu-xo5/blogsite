@@ -1,16 +1,13 @@
-import Input from "../components/Input";
-import Select from "../components/Select";
-import s from "./blog.module.css";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import * as React from "react";
 import { ContentState, convertFromHTML, EditorState } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
-import Button from "../components/Button";
-import { useUser } from "../context/user";
+import * as React from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import { useUser } from "../context/user";
 import useImage from "../hook/useImage";
+import s from "./blog.module.css";
+import BlogForm from "../components/BlogForm";
+import { Typography } from "@mui/material";
 
 export let category = ["gaming", "music", "informational"];
 
@@ -24,6 +21,7 @@ export default function Blog() {
   let { blogId } = useParams();
   let [blog, setBlog] = React.useState(null);
   let [blogError, setBlogError] = React.useState("");
+  let [isSaving, setIsSaving] = React.useState(false);
   let shouldUpdate = Boolean(blogId);
 
   // image preview hooks
@@ -37,16 +35,10 @@ export default function Blog() {
 
     let body = new FormData(ev.currentTarget);
     body.set("html", html);
-    let res = await fetch(
-      shouldUpdate ? `/api/blog/update/${blogId}` : "/api/blog/new",
-      {
-        method: "POST",
-        body: body,
-        headers: {
-          Authorization: jwt,
-        },
-      }
-    );
+
+    setIsSaving(true);
+    let res = await saveBlog(body, { jwt, blogId: blog._id });
+    setIsSaving(false);
     let resData = await res.json();
 
     if (res.ok) {
@@ -98,59 +90,28 @@ export default function Blog() {
   return (
     <div className={s.wrapper}>
       {message && <p className={s.message}>{message}</p>}
+      {isSaving === true && (
+        <p className={s.message}>Saving... the blog changes</p>
+      )}
+
+      <Typography as="h1" variant="h2" py="1rem">
+        {shouldUpdate ? "Update" : "Create New"} Blog
+      </Typography>
 
       {blog ? (
-        <form onSubmit={handleSubmit}>
-          <div className={s.stack}>
-            <Input label="title" name="title" defaultValue={blog.title} />
-
-            <Input
-              label="image"
-              type="file"
-              name="image"
-              onChange={(ev) => setBlogImage(ev.currentTarget.files[0])}
-            />
-
-            <div>
-              <p className={s.label}>Image Preview</p>
-              <img
-                className={s.image}
-                src={blogImagePreviewSrc}
-                alt="&times;"
-              />
-            </div>
-
-            <Select
-              label="Category"
-              name="category"
-              defaultValue={blog.category}
-            >
-              {category.map((opt) => (
-                <option key={opt}>{opt}</option>
-              ))}
-            </Select>
-
-            <div>
-              <p className={s.label}>Content</p>
-              <Editor
-                wrapperStyle={{
-                  minHeight: "40vh",
-                  maxHeight: "60vh",
-                  overflowY: "auto",
-                  border: ".1rem solid",
-                  borderRadius: ".5rem",
-                }}
-                editorState={editorState}
-                toolbarClassName="toolbarClassName"
-                wrapperClassName="wrapperClassName"
-                editorClassName="editorClassName"
-                onEditorStateChange={setEditorState}
-              />
-            </div>
-
-            <Button type="submit">Save</Button>
-          </div>
-        </form>
+        <BlogForm
+          {...{
+            handleSubmit,
+            defaults: {
+              ...blog,
+              image: blogImagePreviewSrc,
+            },
+            editorState,
+            setEditorState,
+            shouldUpdate,
+            onFileChange: (file) => setBlogImage(file),
+          }}
+        />
       ) : blogError ? (
         <p>{blogError}</p>
       ) : (
@@ -160,4 +121,22 @@ export default function Blog() {
       )}
     </div>
   );
+}
+
+async function saveBlog(data, { jwt, blogId }) {
+  let shouldUpdate = !!blogId;
+
+  let url = shouldUpdate ? `/api/blog/update/${blogId}` : "/api/blog/new";
+
+  await new Promise((res) => setTimeout(res, 5000));
+
+  let res = await fetch(url, {
+    method: "POST",
+    body: data,
+    headers: {
+      Authorization: jwt,
+    },
+  });
+
+  return res;
 }

@@ -12,17 +12,37 @@ import Signup from "./pages/signup";
 import { useUser } from "./context/user";
 import Blog from "./pages/blog";
 import Spinner from "./components/Spinner";
-import UpdateBlog from "./pages/blog/update";
 import BlogArticle from "./pages/blog/blog-article";
+import { useEffect, useState } from "react";
 
 function App() {
   let { user } = useUser();
+  let [size, setSize] = useState(window.innerWidth);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setSize(window.innerWidth);
+    });
+  }, []);
 
   return (
     <div className="App">
+      <span
+        style={{
+          position: "absolute",
+          zIndex: 1,
+          top: 0,
+          left: 0,
+          backgroundColor: "white",
+        }}
+      >
+        {size}
+      </span>
       <BrowserRouter>
         {user === null ? (
-          <Spinner />
+          <div className="page--spinner">
+            <Spinner />
+          </div>
         ) : (
           <Routes>
             <Route
